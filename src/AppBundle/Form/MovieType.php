@@ -16,7 +16,11 @@ class MovieType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('year', 'datetime')
+            ->add('year', 'datetime',array(
+                'widget' => 'single_text',
+                // this is actually the default format for single_text
+                'format' => 'yyyy',
+            ))
         ;
     }
     
