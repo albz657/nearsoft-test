@@ -1,38 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <h1>Movie list</h1>
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" media="screen">
+{% endblock %}
 
-    <table>
-        <thead>
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default table-responsive">
+            <div class="panel-heading"><h1>Movie list</h1></div>
+        </div>
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <thead>
             <tr>
                 <th>Id</th>
                 <th>Name</th>
                 <th>Year</th>
                 <th>Actions</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for movie in movies %}
-            <tr>
-                <td><a href="{{ path('movie_show', { 'id': movie.id }) }}">{{ movie.id }}</a></td>
-                <td>{{ movie.name }}</td>
-                <td>{% if movie.year %}{{ movie.year|date('Y') }}{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('movie_show', { 'id': movie.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('movie_edit', { 'id': movie.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for movie in movies %}
+                <tr>
+                    <td><a href="{{ path('movie_show', { 'id': movie.id }) }}">{{ movie.id }}</a></td>
+                    <td>{{ movie.name }}</td>
+                    <td>{% if movie.year %}{{ movie.year|date('Y') }}{% endif %}</td>
+                    <td>
+                        <ul>
+                            <li>
+                                <a href="{{ path('movie_show', { 'id': movie.id }) }}">show</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('movie_edit', { 'id': movie.id }) }}">edit</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
+</div>
     <ul>
         <li>
             <a href="{{ path('movie_new') }}">Create a new entry</a>
