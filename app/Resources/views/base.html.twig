@@ -5,17 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Nearsoft Pair Programing test | {% endblock %}</title>
         {% block stylesheets %}
-            <link href="{{ asset('bundles/app/css/bootstrap.css') }}" rel="stylesheet" media="screen">
+            <link href="{{ asset('bundles/app/css/bootstrap.css') }}" rel="stylesheet" media="screen" type="text/css">
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        <script src="{{ asset('bundles/app/js/jquery.js') }}"></script>
     </head>
     <body>
     <div class="container">
         {% block body %}{% endblock %}
     </div>
         {% block javascripts %}
+            <script src="{{ asset('bundles/app/js/jquery.js') }}"></script>
             <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/nearsoft.js') }}"></script>
         {% endblock %}
     </body>
 </html>

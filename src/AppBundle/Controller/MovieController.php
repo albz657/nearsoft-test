@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -120,6 +121,38 @@ class MovieController extends Controller
         }
 
         return $this->redirectToRoute('movie_index');
+    }
+
+    /**
+     * Delete a movie entity by ajax
+     * @Route("/{id}/delete", name="movie_ajax_delete")
+     * @Method("POST")
+     */
+    public function deleteAjaxAction(Request $request, $id)
+    {
+        //This is optional. Do not do this check if you want to call the same action using a regular request.
+        if (!$request->isXmlHttpRequest()) {
+            return new JsonResponse(array(
+                'status' => 'danger',
+                'message' => 'You can access this only using Ajax!'), 400);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $movie = $em->getRepository('AppBundle:Movie')->find($id);
+
+        if($movie){
+            $em->remove($movie);
+            $em->flush();
+            return new JsonResponse(array(
+                'status' => 'success',
+                'message' => 'Movie "'.$movie->getName().'" deleted',
+            ), 200);
+        }else{
+            return new JsonResponse(array(
+                'status' => 'danger',
+                'message' => 'Movie not found'), 400);
+        }
+
     }
 
     /**

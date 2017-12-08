@@ -5,58 +5,141 @@
     <link href="{{ asset('bundles/app/css/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" media="screen">
 {% endblock %}
 
-{% block body %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default table-responsive">
-            <div class="panel-heading"><h1>Movie list</h1></div>
-        </div>
-        <table class="table table-bordered table-condensed table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Year</th>
-                <th>Genre</th>
-                <th>Actors</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for movie in movies %}
-            <tr>
-                <td><a href="{{ path('movie_show', { 'id': movie.id }) }}">{{ movie.id }}</a></td>
-                <td>{{ movie.name }}</td>
-                <td>{% if movie.year %}{{ movie.year|date('Y') }}{% endif %}</td>
-                <td>{% if movie.genre %}{{ movie.genre.name }}{% endif %}</td>
-                <td>
-                    {% if movie.actors is not empty %}
-                        {% for actor in movie.actors %}
-                            {% if not loop.first %}, {% endif %}
-                            {{ actor.name}}
-                        {% endfor %}
-                    {% endif %}
-                </td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('movie_show', { 'id': movie.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('movie_edit', { 'id': movie.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    </div>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
 
-</div>
+        $('button#confirm').click(function(e){
+            $('#deleteModal').modal('hide');
+            initAjaxForm($('#movie_id').attr('value'));
+        });
+
+        function deleteAjax($id, $name) {
+            $('#movie_name').html($name);
+            $('#movie_id').attr('value',$id);
+            return true;
+        }
+
+        function initAjaxForm($id) {
+              $.ajax({
+                  type: 'POST',
+                  url: '/movie/'+$id+'/delete',
+                  data: {movie: $id}
+              })
+                  .done(function (data) {
+
+                      if (typeof data.message !== 'undefined') {
+                          $('.form_error').html(gethtmlband(data.status,data.message));
+                          $('#movie_'+$id).remove();
+                      }
+                      console.log("done");
+                  })
+                  .fail(function (jqXHR, textStatus, errorThrown) {
+                      if (typeof jqXHR.responseJSON !== 'undefined') {
+                          if (jqXHR.responseJSON.hasOwnProperty('form')) {
+                              $('#form_body').html(jqXHR.responseJSON.form);
+                          }
+                          $('.form_error').html(gethtmlband('danger',jqXHR.responseJSON.message));
+                      } else {
+                          $('.form_error').html(gethtmlband('danger',errorThrown.toString()));
+                      }
+
+                      console.log("fail");
+                  });
+
+        }
+
+        function gethtmlband(status, message){
+            return `<div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-${status}" role="alert">
+                            ${message}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default table-responsive">
+                <div class="panel-heading"><h1>Movie list</h1></div>
+            </div>
+            <div class="form_error"></div>
+            <table id="movies" class="table table-bordered table-condensed table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Year</th>
+                    <th>Genre</th>
+                    <th>Actors</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for movie in movies %}
+                <tr id="movie_{{ movie.id }}">
+                    <td><a href="{{ path('movie_show', { 'id': movie.id }) }}">{{ movie.id }}</a></td>
+                    <td>{{ movie.name }}</td>
+                    <td>{% if movie.year %}{{ movie.year|date('Y') }}{% endif %}</td>
+                    <td>{% if movie.genre %}{{ movie.genre.name }}{% endif %}</td>
+                    <td>
+                        {% if movie.actors is not empty %}
+                            {% for actor in movie.actors %}
+                                {% if not loop.first %}, {% endif %}
+                                {{ actor.name}}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                <a href="{{ path('movie_show', { 'id': movie.id }) }}">show</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('movie_edit', { 'id': movie.id }) }}">edit</a>
+                            </li>
+                            <li>
+                                <a data-toggle="modal" data-target="#deleteModal" onclick="deleteAjax({{ movie.id }},'{{ movie.name }}')" class="ajaxDelete" href="#">delete</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
     <ul>
         <li>
             <a href="{{ path('movie_new') }}">Create a new entry</a>
         </li>
     </ul>
+
+    <!-- Modal -->
+    <div id="deleteModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete "<span id="movie_name"></span>"</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to delete this movie. Are you sure that you want to continue?</p>
+                </div>
+                <input type="hidden" name="movie_id" id="movie_id" value=""/>
+                <div class="modal-footer">
+                    <button id="confirm" class="btn btn-primary">Yes</button>
+                    <button id="cancel" class="btn" data-dismiss="modal" aria-hidden="true">No, leave</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,5 +1,28 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/app/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+    <script>
+        //datepicker
+        jQuery(document).ready(function($){
+            var fecha = new Date();
+            fecha.setDate(tomorrow.getDate());
+            $("input[type='text'].js-datepicker").datepicker("setDate" , fecha);
+        });
 
+        jQuery("input[type='text'].js-datepicker").datepicker({
+            defaultDate: false,
+            format: 'yyyy',
+            autoclose: true,
+            viewMode: "years",
+            minViewMode: "years"
+        });
+    </script>
+{% endblock %}
 {% block body %}
 
 <div class="row">
@@ -21,7 +44,7 @@
                 <div class="bg-danger">{{ form_errors(form.year) }}</div>
                 {{ form_label(form.year, 'Year :', {'label_attr': {'class':'col-xs-1 control-label'}}) }}
                 <div class="col-sm-4">
-                    {{ form_widget(form.year, {'attr': {'class':'form-control'}}) }}
+                    {{ form_widget(form.year, {'attr': {'class':'form-control js-datepicker'}}) }}
                 </div>
             </div>
             <div class="form-group row">
