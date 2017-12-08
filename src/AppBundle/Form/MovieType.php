@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Genre;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,6 +23,10 @@ class MovieType extends AbstractType
                 // this is actually the default format for single_text
                 'format' => 'yyyy',
             ))
+            ->add('genre',EntityType::class, array(
+                'class' => 'AppBundle:Genre',
+            ))
+            ->add('actors')
         ;
     }
     

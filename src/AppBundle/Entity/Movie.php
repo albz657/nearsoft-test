@@ -35,6 +35,19 @@ class Movie
      */
     private $year;
 
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Genre", inversedBy="movies")
+     * @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
+     */
+    protected $genre;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Actor", inversedBy="movies")
+     * @ORM\JoinTable(name="movie_actor")
+     */
+    protected $actors;
 
     /**
      * Get id
@@ -90,5 +103,68 @@ class Movie
     public function getYear()
     {
         return $this->year;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->actors = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set genre
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     * @return Movie
+     */
+    public function setGenre(\AppBundle\Entity\Genre $genre = null)
+    {
+        $this->genre = $genre;
+
+        return $this;
+    }
+
+    /**
+     * Get genre
+     *
+     * @return \AppBundle\Entity\Genre 
+     */
+    public function getGenre()
+    {
+        return $this->genre;
+    }
+
+    /**
+     * Add actors
+     *
+     * @param \AppBundle\Entity\Actor $actors
+     * @return Movie
+     */
+    public function addActor(\AppBundle\Entity\Actor $actors)
+    {
+        $this->actors[] = $actors;
+
+        return $this;
+    }
+
+    /**
+     * Remove actors
+     *
+     * @param \AppBundle\Entity\Actor $actors
+     */
+    public function removeActor(\AppBundle\Entity\Actor $actors)
+    {
+        $this->actors->removeElement($actors);
+    }
+
+    /**
+     * Get actors
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getActors()
+    {
+        return $this->actors;
     }
 }

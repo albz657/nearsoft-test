@@ -7,7 +7,7 @@
             <div class="panel-heading"><h1>Movie details</h1></div>
         </div>
 
-    <table>
+    <table class="table table-bordered table-condensed table-striped table-hover">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -19,7 +19,21 @@
             </tr>
             <tr>
                 <th>Year</th>
-                <td>{% if movie.year %}{{ movie.year|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if movie.year %}{{ movie.year|date('Y') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Genre</th>
+                <td>{% if movie.genre %}{{ movie.genre.name }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Actors</th>
+                <td>{% if movie.actors is not empty %}
+                        {% for actor in movie.actors %}
+                            {% if not loop.first %}<br> {% endif %}
+                            {{ actor.name}}
+                        {% endfor %}
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
