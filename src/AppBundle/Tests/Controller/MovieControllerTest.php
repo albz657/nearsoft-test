@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MovieControllerTest extends WebTestCase
 {
-    /*
+
     public function testCompleteScenario()
     {
         // Create a new client to browse the application
@@ -19,22 +19,33 @@ class MovieControllerTest extends WebTestCase
 
         // Fill in the form and submit it
         $form = $crawler->selectButton('Create')->form(array(
-            'appbundle_movie[field_name]'  => 'Test',
+            'movie[name]' => 'La Vida es bella',
+            'movie[year]' => 2015
             // ... other fields to fill
         ));
 
         $client->submit($form);
+
+        //dump($client->getResponse());
+        // check the response
+       // $this->assertTrue($client->getResponse()->isSuccessful());
+
+        // then check the response content
+        //$this->assertEquals(0, $crawler->filter('td:contains("La Vida es bella")')->count(), 'Missing element td:contains("La Vida es bella")');
+
+       // $this->assertTrue($client->getResponse()->isRedirection());
+
         $crawler = $client->followRedirect();
 
         // Check data in the show view
-        $this->assertGreaterThan(0, $crawler->filter('td:contains("Test")')->count(), 'Missing element td:contains("Test")');
+        $this->assertGreaterThan(0, $crawler->filter('td:contains("La Vida es bella")')->count(), 'Missing element td:contains("Test")');
 
         // Edit the entity
         $crawler = $client->click($crawler->selectLink('Edit')->link());
 
         $form = $crawler->selectButton('Update')->form(array(
-            'appbundle_movie[field_name]'  => 'Foo',
-            // ... other fields to fill
+            'movie[name]' => 'Foo',
+            'movie[year]' => 2017
         ));
 
         $client->submit($form);
@@ -42,6 +53,7 @@ class MovieControllerTest extends WebTestCase
 
         // Check the element contains an attribute with value equals "Foo"
         $this->assertGreaterThan(0, $crawler->filter('[value="Foo"]')->count(), 'Missing element [value="Foo"]');
+        $this->assertGreaterThan(0, $crawler->filter('[value="2017"]')->count(), 'Missing element [value="2017"]');
 
         // Delete the entity
         $client->submit($crawler->selectButton('Delete')->form());
@@ -51,5 +63,5 @@ class MovieControllerTest extends WebTestCase
         $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
     }
 
-    */
+
 }
