@@ -12,39 +12,69 @@ class MovieControllerTest extends WebTestCase
         // Create a new client to browse the application
         $client = static::createClient();
 
+        //veo la ruta principal y si carga bien
+        $crawler = $client->request('GET', '/');
+        //la pagina principal redirecciona al listado
+        $this->assertTrue($client->getResponse()->isRedirection());
+        //sigo la corriente
+        $crawler = $client->followRedirect();
+        //que la respuesta este ok
+        $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /");
+
+
         // Create a new entry in the database
-        $crawler = $client->request('GET', '/movie/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /movie/");
         $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
+
+        $em = $this->getContainer()->get;
 
         // Fill in the form and submit it
         $form = $crawler->selectButton('Create')->form(array(
-            'movie[name]' => 'La Vida es bella',
+            'movie[name]' => 'Foo',
             'movie[year]' => 2015
             // ... other fields to fill
         ));
 
         $client->submit($form);
 
-        //dump($client->getResponse());
-        // check the response
-       // $this->assertTrue($client->getResponse()->isSuccessful());
+        //que la respuesta este ok
+//        $result = $client->getResponse()->isSuccessful();
 
-        // then check the response content
-        //$this->assertEquals(0, $crawler->filter('td:contains("La Vida es bella")')->count(), 'Missing element td:contains("La Vida es bella")');
+//        //si la respuesta es succefull es que no redirecciono pero tiene que devolver el error
+//        if ($result){
+//            //la pagina tiene status 200 pero muestra un error
+//            $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code validation");
+//            $newCrawler = $crawler->filter('div')
+//                                    ->reduce( function ($node, $i){
+//                                        if (!$node->getAttribute('class')) {
+//                                            return false;
+//                                        }
+//                                    })
+//                                    ->first();
+//            dump($newCrawler);
+//            $this->assertGreaterThan(0, $crawler->filter('div')->count(), 'Missing element error');
+//
+//        }else{
+            //el agregar redirecciona al show
+            $this->assertTrue($client->getResponse()->isRedirection(), "No esta redireccionando");
+            $this->assertEquals(302, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for redirection");
+            //sigo la corriente
+            $crawler = $client->followRedirect();
+//        }
 
-       // $this->assertTrue($client->getResponse()->isRedirection());
 
-        $crawler = $client->followRedirect();
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /");
+
 
         // Check data in the show view
-        $this->assertGreaterThan(0, $crawler->filter('td:contains("La Vida es bella")')->count(), 'Missing element td:contains("Test")');
+        $this->assertGreaterThan(0, $crawler->filter('td:contains("Foo")')->count(), 'Missing element td:contains("Foo")');
 
         // Edit the entity
         $crawler = $client->click($crawler->selectLink('Edit')->link());
 
         $form = $crawler->selectButton('Update')->form(array(
-            'movie[name]' => 'Foo',
+            'movie[name]' => 'Bar',
             'movie[year]' => 2017
         ));
 
@@ -52,7 +82,7 @@ class MovieControllerTest extends WebTestCase
         $crawler = $client->followRedirect();
 
         // Check the element contains an attribute with value equals "Foo"
-        $this->assertGreaterThan(0, $crawler->filter('[value="Foo"]')->count(), 'Missing element [value="Foo"]');
+        $this->assertGreaterThan(0, $crawler->filter('[value="Bar"]')->count(), 'Missing element [value="Bar"]');
         $this->assertGreaterThan(0, $crawler->filter('[value="2017"]')->count(), 'Missing element [value="2017"]');
 
         // Delete the entity

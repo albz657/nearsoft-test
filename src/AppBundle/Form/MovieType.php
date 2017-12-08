@@ -2,7 +2,6 @@
 
 namespace AppBundle\Form;
 
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,11 +17,7 @@ class MovieType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('year', DateTimeType::class,array(
-                'widget' => 'single_text',
-                // this is actually the default format for single_text
-                'format' => 'yyyy',
-            ))
+            ->add('year')
             ->add('genre',EntityType::class, array(
                 'class' => 'AppBundle:Genre',
             ))

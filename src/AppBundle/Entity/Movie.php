@@ -3,12 +3,18 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Movie
  *
  * @ORM\Table(name="movie")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MovieRepository")
+*  @UniqueEntity(
+ *     fields="name",
+ *     message="This name exist."
+ * )
  */
 class Movie
 {
@@ -23,15 +29,16 @@ class Movie
 
     /**
      * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="year", type="datetime", nullable=true)
+     * @var int
+     * @ORM\Column(name="year", type="integer", nullable=true)
+     * @Assert\Regex(pattern="/([0-9]{4})/", message="Please use the YYYY format for year")
+     * @Assert\Range(min="1985",max="2017")
+     * Example "2014"
      */
     private $year;
 
@@ -39,6 +46,7 @@ class Movie
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Genre", inversedBy="movies")
+     * @Assert\NotNull()
      * @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
      */
     protected $genre;

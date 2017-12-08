@@ -6,9 +6,12 @@
         <div class="panel panel-default table-responsive">
             <div class="panel-heading"><h1>Movie details</h1></div>
         </div>
-
-    <table class="table table-bordered table-condensed table-striped table-hover">
-        <tbody>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ movie.id }}</td>
@@ -19,7 +22,7 @@
             </tr>
             <tr>
                 <th>Year</th>
-                <td>{% if movie.year %}{{ movie.year|date('Y') }}{% endif %}</td>
+                <td>{% if movie.year %}{{ movie.year }}{% endif %}</td>
             </tr>
             <tr>
                 <th>Genre</th>
@@ -35,21 +38,21 @@
                     {% endif %}
                 </td>
             </tr>
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('movie_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('movie_edit', { 'id': movie.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
+            </tbody>
+        </table>
+        <ul>
+            <li>
+                <a href="{{ path('movie_index') }}">Back to the list</a>
+            </li>
+            <li>
+                <a href="{{ path('movie_edit', { 'id': movie.id }) }}">Edit</a>
+            </li>
+            <li>
+                {{ form_start(delete_form) }}
                 <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+                {{ form_end(delete_form) }}
+            </li>
+        </ul>
     </div>
+</div>
 {% endblock %}

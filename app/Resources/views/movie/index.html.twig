@@ -29,19 +29,16 @@
                   .done(function (data) {
 
                       if (typeof data.message !== 'undefined') {
-                          $('.form_error').html(gethtmlband(data.status,data.message));
+                          $('.notification').html(gethtmlband(data.status,data.message));
                           $('#movie_'+$id).remove();
                       }
                       console.log("done");
                   })
                   .fail(function (jqXHR, textStatus, errorThrown) {
                       if (typeof jqXHR.responseJSON !== 'undefined') {
-                          if (jqXHR.responseJSON.hasOwnProperty('form')) {
-                              $('#form_body').html(jqXHR.responseJSON.form);
-                          }
-                          $('.form_error').html(gethtmlband('danger',jqXHR.responseJSON.message));
+                          $('.notification').html(gethtmlband('danger',jqXHR.responseJSON.message));
                       } else {
-                          $('.form_error').html(gethtmlband('danger',errorThrown.toString()));
+                          $('.notification').html(gethtmlband('danger',errorThrown.toString()));
                       }
 
                       console.log("fail");
@@ -70,7 +67,6 @@
             <div class="panel panel-default table-responsive">
                 <div class="panel-heading"><h1>Movie list</h1></div>
             </div>
-            <div class="form_error"></div>
             <table id="movies" class="table table-bordered table-condensed table-striped table-hover">
             <thead>
                 <tr>
@@ -87,7 +83,7 @@
                 <tr id="movie_{{ movie.id }}">
                     <td><a href="{{ path('movie_show', { 'id': movie.id }) }}">{{ movie.id }}</a></td>
                     <td>{{ movie.name }}</td>
-                    <td>{% if movie.year %}{{ movie.year|date('Y') }}{% endif %}</td>
+                    <td>{% if movie.year %}{{ movie.year }}{% endif %}</td>
                     <td>{% if movie.genre %}{{ movie.genre.name }}{% endif %}</td>
                     <td>
                         {% if movie.actors is not empty %}

@@ -11,6 +11,20 @@
     </head>
     <body>
     <div class="container">
+        <div class="row">
+            <div class="col-md-12 notification">
+                {% block notification %}
+                    {% set array = app.session.flashbag.all %}
+                    {% for tag, line in array %}
+                        {% for underline in line %}
+                            <div class="alert alert-{{ tag }}" role="alert">
+                                {{ underline }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endblock %}
+            </div>
+        </div>
         {% block body %}{% endblock %}
     </div>
         {% block javascripts %}
